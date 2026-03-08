@@ -283,6 +283,19 @@ function ResultsContent() {
 
             <p className="text-sm text-brand-dark/60">{videos.mainVideo.description}</p>
             <p className="text-xs text-brand-dark/30 mt-2">{videos.mainVideo.duration}</p>
+
+            {/* Mini CTA after video */}
+            <div className="mt-5 pt-5 border-t border-brand-dark/5">
+              <p className="text-xs text-brand-dark/40 mb-2">
+                {conversionPath === 'A'
+                  ? `${name}, this is just a taste. RTT goes 10x deeper than anything you'll find on YouTube.`
+                  : `${name}, this video is the beginning. The real transformation happens when you go deeper.`}
+              </p>
+              <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
+                className="text-brand-gold text-xs font-semibold hover:underline">
+                {products.primary.ctaText} →
+              </a>
+            </div>
           </SectionCard>
         </Section>
 
@@ -365,32 +378,46 @@ function ResultsContent() {
           </SectionCard>
         </Section>
 
-        {/* ━━━ 6. AI COACHING REPORT (if generated) ━━━ */}
+        {/* ━━━ MINI CTA 1: After journal ━━━ */}
+        <Section delay={0.27}>
+          <div className="bg-brand-dark/5 rounded-2xl p-5 text-center">
+            <p className="text-sm text-brand-dark/60 mb-2">
+              These prompts barely scratch the surface. Marisa has a full programme to rewire the pattern your quiz revealed.
+            </p>
+            <a href={products.secondary?.ctaUrl || products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
+              className="text-brand-gold text-sm font-semibold hover:underline">
+              Explore {products.secondary?.name || products.primary.name} →
+            </a>
+          </div>
+        </Section>
+
+        {/* ━━━ 6. AI COACHING REPORT (full, not condensed) ━━━ */}
         {report && (
           <Section delay={0.3}>
             <SectionCard>
               <SectionLabel text="Your Personal Message from Marisa" />
               <div className="report-content">
-                {report.split('\n\n').slice(0, 6).map((para, i) => {
+                {report.split('\n\n').map((para, i) => {
                   if (para.trim().startsWith('───') || para.trim() === '---') {
-                    return <hr key={i} className="my-4 border-none text-center" />;
+                    return <hr key={i} className="my-6 border-brand-dark/10" />;
                   }
                   return (
-                    <p key={i} className="text-brand-dark/70 text-sm leading-relaxed mb-3">{para}</p>
+                    <p key={i} className="text-brand-dark/70 text-[15px] leading-[1.8] mb-4">{para}</p>
                   );
                 })}
               </div>
-              {report.split('\n\n').length > 6 && (
-                <details className="mt-2">
-                  <summary className="text-xs text-brand-gold font-medium cursor-pointer">Read full message →</summary>
-                  <div className="mt-3 report-content">
-                    {report.split('\n\n').slice(6).map((para, i) => (
-                      <p key={i} className="text-brand-dark/70 text-sm leading-relaxed mb-3">{para}</p>
-                    ))}
-                  </div>
-                </details>
-              )}
-              <p className="text-right mt-4 text-sm italic text-brand-dark/40">— Marisa</p>
+              <p className="text-right mt-6 text-sm italic text-brand-dark/40">— Marisa x</p>
+
+              {/* CTA within the message */}
+              <div className="mt-6 pt-6 border-t border-brand-dark/5 text-center">
+                <p className="text-sm text-brand-dark/50 mb-3">
+                  {name}, if this message resonated — imagine what a full programme with Marisa could do.
+                </p>
+                <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
+                  className="inline-block bg-brand-dark text-brand-cream text-sm font-semibold px-6 py-3 rounded-full hover:bg-brand-plum transition-colors">
+                  {products.primary.ctaText}
+                </a>
+              </div>
             </SectionCard>
           </Section>
         )}
@@ -426,6 +453,20 @@ function ResultsContent() {
                 </div>
               </SectionCard>
             ))}
+          </div>
+
+          {/* Mini CTA after support videos */}
+          <div className="mt-4 bg-gradient-to-r from-brand-gold/5 to-brand-gold/10 rounded-2xl p-5 text-center border border-brand-gold/10">
+            <p className="text-sm text-brand-dark/70 mb-1 font-medium">
+              Ready to stop watching and start transforming?
+            </p>
+            <p className="text-xs text-brand-dark/40 mb-3">
+              {name}, everything your quiz revealed can be rewired. Here's how.
+            </p>
+            <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
+              className="inline-block bg-brand-gold text-brand-dark text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-amber-400 transition-colors">
+              {products.primary.ctaText}
+            </a>
           </div>
         </Section>
 

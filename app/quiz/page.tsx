@@ -87,7 +87,7 @@ export default function QuizPage() {
       const data = await res.json();
 
       // Navigate to results page with the user ID
-      router.push(`/results?id=${data.userId}&archetype=${result.archetype}`);
+      router.push(`/results?id=${data.userId}&archetype=${result.archetype}&name=${encodeURIComponent(name)}`);
     } catch (err) {
       // If API fails, still navigate with data in URL params
       const result = calculateResults(scores);
