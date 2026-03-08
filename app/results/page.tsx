@@ -416,9 +416,9 @@ function ResultsContent() {
             <p className="text-sm text-brand-dark/60 mb-2">
               {name}, journaling surfaces what's hidden — but it can't rewire it. The belief that {beliefLabels[primaryBelief] || "you're not enough"} was installed before you could spell your own name. Shifting it requires subconscious work.
             </p>
-            <a href={products.secondary?.ctaUrl || products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
+            <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
               className="text-brand-gold text-sm font-semibold hover:underline">
-              Explore {products.secondary?.name || products.primary.name} →
+              {products.primary.ctaText} →
             </a>
           </div>
         </Section>
