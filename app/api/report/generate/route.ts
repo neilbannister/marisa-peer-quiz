@@ -50,6 +50,7 @@ export async function POST(req: NextRequest) {
           if (memData && !memData.error) {
             userData = {
               first_name: memData.name,
+              gender: memData.gender || 'female',
               primary_archetype: memData.result?.archetype,
               conversion_path: memData.result?.conversionPath,
               primary_belief: memData.result?.primaryBelief,
@@ -80,6 +81,7 @@ export async function POST(req: NextRequest) {
     if (!userData && quizData) {
       userData = {
         first_name: quizData.name,
+        gender: quizData.gender || 'female',
         primary_archetype: quizData.result?.archetype,
         conversion_path: quizData.result?.conversionPath,
         primary_belief: quizData.result?.primaryBelief,
@@ -143,7 +145,8 @@ export async function POST(req: NextRequest) {
       userData.first_name,
       result as any,
       formattedAnswers,
-      userData.age_range
+      userData.age_range,
+      userData.gender || 'female'
     );
 
     // Generate with OpenAI
@@ -154,7 +157,7 @@ export async function POST(req: NextRequest) {
       messages: [
         {
           role: 'system',
-          content: 'You are Marisa Peer, writing a personal coaching report. Your voice is warm, direct, insightful, and motherly. You have an extraordinary ability to connect seemingly unrelated pieces of someone\'s story into a coherent narrative that makes them feel deeply understood. Write in flowing paragraphs, not lists or bullet points. Use elegant separator lines (───) between sections.',
+          content: 'You are Marisa Peer, writing a personal coaching report. Your voice is warm, direct, insightful, and wise. You have an extraordinary ability to connect seemingly unrelated pieces of someone\'s story into a coherent narrative that makes them feel deeply understood. Write in flowing paragraphs, not lists or bullet points. Use elegant separator lines (───) between sections. Pay close attention to the gender instructions in the prompt and use the correct pronouns throughout.',
         },
         { role: 'user', content: prompt },
       ],
@@ -198,7 +201,7 @@ But ${name}, you're not that child anymore. And the programme that once protecte
 
 ───
 
-I've sat across from thousands of women who felt exactly like you do right now. Women who were functioning but not living. Women who gave everything to everyone else and had nothing left for themselves. Women who knew — deep in their bones — that they were meant for more, but couldn't figure out how to access it.
+I've sat across from thousands of people who felt exactly like you do right now. People who were functioning but not living. People who gave everything to everyone else and had nothing left for themselves. People who knew — deep in their bones — that they were meant for more, but couldn't figure out how to access it.
 
 And every single one of them had the same thing in common: a belief, installed in childhood, that was running their entire adult life without their conscious awareness.
 

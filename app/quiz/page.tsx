@@ -12,6 +12,7 @@ export default function QuizPage() {
   const [scores, setScores] = useState<QuizScores>(createEmptyScores());
   const [answers, setAnswers] = useState<Record<number, { key: string; text: string }>>({});
   const [name, setName] = useState('');
+  const [gender, setGender] = useState('');
   const [email, setEmail] = useState('');
   const [ageRange, setAgeRange] = useState('35-44');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -56,6 +57,12 @@ export default function QuizPage() {
     }
   };
 
+  const handleGenderSelect = (g: string) => {
+    setGender(g);
+    setAnswers({ ...answers, [question.id]: { key: 'gender', text: g } });
+    setTimeout(() => setCurrentQ(currentQ + 1), 400);
+  };
+
   const handleEmailSubmit = async () => {
     if (!email.includes('@')) return;
     setIsSubmitting(true);
@@ -89,12 +96,12 @@ export default function QuizPage() {
       // Store quiz data for report generation
       try {
         sessionStorage.setItem('quizData', JSON.stringify({
-          name, email, ageRange, answers: answerList, result, scores,
+          name, gender, email, ageRange, answers: answerList, result, scores,
         }));
       } catch {}
 
       // Navigate to results page with the user ID
-      router.push(`/results?id=${data.userId}&archetype=${result.archetype}&name=${encodeURIComponent(name)}`);
+      router.push(`/results?id=${data.userId}&archetype=${result.archetype}&name=${encodeURIComponent(name)}&gender=${gender}`);
     } catch (err) {
       // If API fails, still navigate with data in URL params
       const result = calculateResults(scores);
@@ -105,11 +112,11 @@ export default function QuizPage() {
           questionId: parseInt(qId), answerKey: ans.key, answerText: ans.text,
         }));
         sessionStorage.setItem('quizData', JSON.stringify({
-          name, email, ageRange, answers: answerList, result, scores,
+          name, gender, email, ageRange, answers: answerList, result, scores,
         }));
       } catch {}
 
-      router.push(`/results?archetype=${result.archetype}&name=${encodeURIComponent(name)}`);
+      router.push(`/results?archetype=${result.archetype}&name=${encodeURIComponent(name)}&gender=${gender}`);
     }
   };
 
@@ -233,6 +240,33 @@ export default function QuizPage() {
                 >
                   Continue
                 </motion.button>
+              </div>
+            )}
+
+            {/* ─── GENDER SELECT ─── */}
+            {question.type === 'gender' && (
+              <div className="mt-8 space-y-3">
+                {[
+                  { key: 'female', label: 'Female' },
+                  { key: 'male', label: 'Male' },
+                  { key: 'non_binary', label: 'Non-binary' },
+                  { key: 'prefer_not', label: 'Prefer not to say' },
+                ].map((option, i) => (
+                  <motion.button
+                    key={option.key}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.1 * i }}
+                    onClick={() => handleGenderSelect(option.key)}
+                    className={`w-full text-left p-4 md:p-5 rounded-2xl border-2 transition-all duration-300
+                      ${gender === option.key
+                        ? 'border-brand-gold bg-brand-gold/10 scale-[1.02]'
+                        : 'border-brand-dark/10 bg-white/80 hover:border-brand-gold/50 hover:bg-white hover:shadow-md'
+                      }`}
+                  >
+                    <p className="font-medium text-brand-dark text-[15px]">{option.label}</p>
+                  </motion.button>
+                ))}
               </div>
             )}
 

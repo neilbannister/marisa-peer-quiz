@@ -213,17 +213,24 @@ export function getJournalPrompts(
   primaryBelief: string,
   originPattern: string,
   archetype: Archetype,
-  name: string
+  name: string,
+  gender: string = 'female'
 ): { deepDive: string; dailyReflection: string; futureself: string } {
+  const child = gender === 'male' ? 'little boy' : gender === 'non_binary' ? 'younger self' : 'little girl';
+  const pronoun = gender === 'male' ? 'he' : gender === 'non_binary' ? 'they' : 'she';
+  const possessive = gender === 'male' ? 'his' : gender === 'non_binary' ? 'their' : 'her';
+  const objective = gender === 'male' ? 'him' : gender === 'non_binary' ? 'them' : 'her';
+  const was = gender === 'non_binary' ? 'were' : 'was';
+
   const deepDive = originPattern === 'parentification'
-    ? `${name}, write a letter to the little girl who learned she had to be "good" to be loved. Tell her what you wish someone had told her back then. Tell her she was already enough — without being helpful, responsible, or perfect.`
+    ? `${name}, write a letter to the ${child} who learned ${pronoun} had to be "good" to be loved. Tell ${objective} what you wish someone had told ${objective} back then. Tell ${objective} ${pronoun} ${was} already enough — without being helpful, responsible, or perfect.`
     : originPattern === 'invalidation'
-    ? `${name}, write a letter to the little girl who was told she was "too much." Tell her that her sensitivity is a gift, not a flaw. Tell her that the world needs exactly the depth she carries.`
+    ? `${name}, write a letter to the ${child} who was told ${pronoun} ${was} "too much." Tell ${objective} that ${possessive} sensitivity is a gift, not a flaw. Tell ${objective} that the world needs exactly the depth ${pronoun} carries.`
     : originPattern === 'neglect'
-    ? `${name}, write a letter to the little girl whose needs always came last. Tell her that she matters. Tell her that her desires, her dreams, her feelings — they all count. They always did.`
+    ? `${name}, write a letter to the ${child} whose needs always came last. Tell ${objective} that ${pronoun} matters. Tell ${objective} that ${possessive} desires, ${possessive} dreams, ${possessive} feelings — they all count. They always did.`
     : originPattern === 'conditional_love'
-    ? `${name}, write a letter to the little girl who believed love had to be earned through achievement. Tell her that she is loved for who she IS, not what she does. Tell her she can rest.`
-    : `${name}, write a letter to the little girl who absorbed everyone else's pain to keep the peace. Tell her it was never her job to hold the family together. Tell her she's allowed to put herself first.`;
+    ? `${name}, write a letter to the ${child} who believed love had to be earned through achievement. Tell ${objective} that ${pronoun} is loved for who ${pronoun} IS, not what ${pronoun} does. Tell ${objective} ${pronoun} can rest.`
+    : `${name}, write a letter to the ${child} who absorbed everyone else's pain to keep the peace. Tell ${objective} it was never ${possessive} job to hold the family together. Tell ${objective} ${pronoun}'s allowed to put ${objective}self first.`;
 
   const dailyReflection = archetype === 'born_healer'
     ? "Today, instead of asking 'How can I help?' — ask yourself: 'What do I need right now?' Write whatever comes up, without filtering or judging."
@@ -235,7 +242,7 @@ export function getJournalPrompts(
     ? "What emotion have you been carrying today that isn't yours? Write it down, name whose it is, and then write: 'I release what is not mine to carry.'"
     : "List three things you started and didn't finish this year. For each one, write whether you stopped because it wasn't right for you — or because you were afraid.";
 
-  const futureself = `Close your eyes for 60 seconds and imagine yourself one year from today, ${name}. The version of you who made the brave choice. Who did the inner work. Who finally stepped into her calling. Now open your eyes and write her a letter that starts: "Dear Future ${name}, I'm writing to tell you that today I decided..."`;
+  const futureself = `Close your eyes for 60 seconds and imagine yourself one year from today, ${name}. The version of you who made the brave choice. Who did the inner work. Who finally stepped into ${possessive} calling. Now open your eyes and write ${objective}self a letter that starts: "Dear Future ${name}, I'm writing to tell you that today I decided..."`;
 
   return { deepDive, dailyReflection, futureself };
 }
@@ -268,7 +275,7 @@ export function getRecommendedVideos(
       description: "Marisa explains how RTT works and why natural healers make the best practitioners.",
       youtubeId: "jGvfSYMg5GI", // Replace with actual RTT training overview video ID
       duration: "18 min",
-      context: "Based on your Born Healer profile, this training shows you exactly what RTT is and how women like you are using it to build thriving careers.",
+      context: "Based on your Born Healer profile, this training shows you exactly what RTT is and how people like you are using it to build thriving careers.",
     },
     A_default: {
       title: "Could You Be a Rapid Transformational Therapist?",
@@ -342,10 +349,10 @@ export function getRecommendedVideos(
     },
     too_late: {
       title: "It's Never Too Late — Proof from Real Transformations",
-      description: "Stories of women who transformed their lives at 40, 50, and 60+.",
+      description: "Stories of people who transformed their lives at 40, 50, and 60+.",
       youtubeId: "LNHBMFCzznE",
       duration: "8 min",
-      context: "You said you fear it's too late. These women prove otherwise.",
+      context: "You said you fear it's too late. These stories prove otherwise.",
     },
     judgment: {
       title: "How to Stop Caring What People Think",
@@ -424,7 +431,7 @@ const desireLabels: Record<string, string> = {
 };
 
 const originLabels: Record<string, string> = {
-  parentification: "being the responsible one in your family — the little girl who had to grow up too fast",
+  parentification: "being the responsible one in your family — the child who had to grow up too fast",
   invalidation: "being told you were too much, too sensitive, too emotional",
   neglect: "having your needs consistently come last",
   conditional_love: "learning that love was something you had to earn through achievement",
@@ -438,13 +445,17 @@ export function getProductPrescription(
   primaryBelief: string,
   primaryFear: string,
   originPattern: string,
-  name: string
+  name: string,
+  gender: string = 'female'
 ): { primary: ProductPrescription; secondary?: ProductPrescription } {
 
   const belief = beliefLabels[primaryBelief] || "you're not enough";
   const fear = fearLabels[primaryFear] || "failing";
   const desire = desireLabels[primaryDesire] || "to feel like you are enough";
   const origin = originLabels[originPattern] || "childhood experiences that shaped your beliefs";
+  const child = gender === 'male' ? 'little boy' : gender === 'non_binary' ? 'younger self' : 'little girl';
+  const women = gender === 'male' ? 'men' : gender === 'non_binary' ? 'people' : 'women';
+  const womenCap = gender === 'male' ? 'Men' : gender === 'non_binary' ? 'People' : 'Women';
 
   // ═══════════════════════════════════════════════
   // PATH A: RTT INTEGRATED CERTIFICATION
@@ -463,7 +474,7 @@ export function getProductPrescription(
       "Join a global community of 18,000+ graduates who are changing lives in 80+ countries",
       "The average RTT practitioner charges $250-500 per session",
     ],
-    proofPoint: "Over 18,000 women have qualified as RTT practitioners. Many left careers they hated and now earn a full-time income doing work that gives them goosebumps every single day.",
+    proofPoint: `Over 18,000 ${women} have qualified as RTT practitioners. Many left careers they hated and now earn a full-time income doing work that gives them goosebumps every single day.`,
     ctaText: "Book Your Free Discovery Call",
     ctaUrl: "https://go.applyrtt.com/integrated-v-app",
     urgency: "A free 30-minute call with a Marisa Peer Admissions Advisor — no pressure, just clarity on whether this is right for you.",
@@ -476,7 +487,7 @@ export function getProductPrescription(
     tag: "THE PERFECT FIRST STEP FOR YOU",
     name: "Peer Hypnosis Method Certification",
     price: "$2,950",
-    whyYou: `${name}, your quiz revealed something interesting. You have genuine healer potential — that ability to sense what people need, to hold space, to make others feel safe. But I also noticed something else: a hesitation. A part of you that isn't sure you're ready for the full leap yet.\n\nThat hesitation? It's connected to the belief that ${belief}. It's the same pattern that started with ${origin}. And here's the beautiful thing — the Peer Hypnosis Method doesn't just teach you to help others. The first person you'll practise on is yourself.\n\nYou told me your biggest fear is ${fear}. This programme is designed so you can test your calling without the pressure of a massive commitment. Think of it as dipping your toes in — except the water is warm, and most women who start here end up diving in completely.`,
+    whyYou: `${name}, your quiz revealed something interesting. You have genuine healer potential — that ability to sense what people need, to hold space, to make others feel safe. But I also noticed something else: a hesitation. A part of you that isn't sure you're ready for the full leap yet.\n\nThat hesitation? It's connected to the belief that ${belief}. It's the same pattern that started with ${origin}. And here's the beautiful thing — the Peer Hypnosis Method doesn't just teach you to help others. The first person you'll practise on is yourself.\n\nYou told me your biggest fear is ${fear}. This programme is designed so you can test your calling without the pressure of a massive commitment. Think of it as dipping your toes in — except the water is warm, and most ${women} who start here end up diving in completely.`,
     description: "The Peer Hypnosis Method is a certified training that gives you foundational hypnotherapy skills — enough to start helping friends, family, and even your first paying clients.",
     benefits: [
       "A recognised certification you can use immediately",
@@ -486,7 +497,7 @@ export function getProductPrescription(
       "Self-paced learning that fits around your current life",
       "Fraction of the investment of the full certification — with real, tangible skills",
     ],
-    proofPoint: "Most women who complete the Peer Hypnosis Method say it changed their life before they ever used it on anyone else — because the first mind you rewire is your own.",
+    proofPoint: `Most ${women} who complete the Peer Hypnosis Method say it changed their life before they ever used it on anyone else — because the first mind you rewire is your own.`,
     ctaText: "Learn More About Peer Hypnosis",
     ctaUrl: "https://marisapeer.com/rtt-training-courses/",
   };
@@ -498,7 +509,7 @@ export function getProductPrescription(
     tag: "YOUR PERSONALISED TRANSFORMATION",
     name: "Confidence & Self-Worth Programme",
     price: "",
-    whyYou: `${name}, I want to be honest with you about what your quiz revealed. Your scores show a pattern I see often in women who are highly capable on the outside but deeply struggling on the inside. The belief that ${belief} isn't just an idea you carry — it's running your entire life. It's why you ${primaryFear === 'failure' ? "hold yourself back from the things you actually want" : primaryFear === 'judgment' ? "dim your light so others feel comfortable" : primaryFear === 'too_late' ? "keep telling yourself the window has closed" : "can't seem to break free from the same cycles"}.\n\nThis pattern started with ${origin}. And here's what I need you to understand: no amount of self-help books, affirmations, or willpower is going to shift something that was installed in your subconscious before you were 7 years old. You need someone trained in root cause therapy to go in and rewire it.\n\nThis programme pairs you with a dedicated RTT-trained coach who will work with you one-on-one over 90 days. They'll target the exact beliefs your quiz identified — not generic "confidence building." Targeted, surgical, permanent change.`,
+    whyYou: `${name}, I want to be honest with you about what your quiz revealed. Your scores show a pattern I see often in ${women} who are highly capable on the outside but deeply struggling on the inside. The belief that ${belief} isn't just an idea you carry — it's running your entire life. It's why you ${primaryFear === 'failure' ? "hold yourself back from the things you actually want" : primaryFear === 'judgment' ? "dim your light so others feel comfortable" : primaryFear === 'too_late' ? "keep telling yourself the window has closed" : "can't seem to break free from the same cycles"}.\n\nThis pattern started with ${origin}. And here's what I need you to understand: no amount of self-help books, affirmations, or willpower is going to shift something that was installed in your subconscious before you were 7 years old. You need someone trained in root cause therapy to go in and rewire it.\n\nThis programme pairs you with a dedicated RTT-trained coach who will work with you one-on-one over 90 days. They'll target the exact beliefs your quiz identified — not generic "confidence building." Targeted, surgical, permanent change.`,
     description: "A 90-180 day guided transformation with a certified RTT practitioner, working one-on-one on the specific beliefs and patterns your quiz identified.",
     benefits: [
       "A dedicated RTT-trained coach matched to your specific needs",
@@ -520,7 +531,7 @@ export function getProductPrescription(
     tag: "START HERE — THIS WAS MADE FOR YOU",
     name: "I Am Enough Course",
     price: "$297 – $497",
-    whyYou: `${name}, I want you to read this carefully. Every single thing your quiz revealed — the belief that ${belief}, the fear of ${fear}, the pattern that began with ${origin}, even your desire ${desire} — all of it traces back to one root belief: "I am not enough."\n\nI didn't design this course for everyone. I designed it for women exactly like you. Women who are smart enough to know something is holding them back, but who've never been able to name it — let alone fix it. Women who've tried journaling, therapy, self-help books, and still feel stuck in the same loop.\n\nThe I Am Enough course doesn't just teach you to think differently. It uses hypnotherapy to rewire the belief at its source — in your subconscious mind, where it was installed during ${origin}. Over 1 million people have been impacted by this movement. And most of them started exactly where you are right now.`,
+    whyYou: `${name}, I want you to read this carefully. Every single thing your quiz revealed — the belief that ${belief}, the fear of ${fear}, the pattern that began with ${origin}, even your desire ${desire} — all of it traces back to one root belief: "I am not enough."\n\nI didn't design this course for everyone. I designed it for ${women} exactly like you. ${womenCap} who are smart enough to know something is holding them back, but who've never been able to name it — let alone fix it. ${womenCap} who've tried journaling, therapy, self-help books, and still feel stuck in the same loop.\n\nThe I Am Enough course doesn't just teach you to think differently. It uses hypnotherapy to rewire the belief at its source — in your subconscious mind, where it was installed during ${origin}. Over 1 million people have been impacted by this movement. And most of them started exactly where you are right now.`,
     description: "Marisa Peer's signature self-paced programme that uses hypnotherapy to permanently rewire the core belief that drives almost every struggle: 'I am not enough.'",
     benefits: [
       "Directly targets the #1 belief your quiz identified: that " + belief,
@@ -543,16 +554,16 @@ export function getProductPrescription(
     name: "All Access Transformation Pass",
     price: "$19/month",
     whyYou: `${name}, I know what it's like to feel like you want to change but not know where to start. Your quiz revealed the belief that ${belief}, and a fear of ${fear}. Those are real. And they didn't come from nowhere — they started with ${origin}.\n\nThe good news? You don't have to figure this out alone, and you don't have to make a massive commitment to begin. The All Access Pass gives you Marisa's entire library of 90+ programmes — including specific work on ${primaryDesire === 'self_worth' ? 'self-worth and the "not enough" belief' : primaryDesire === 'confidence' ? 'confidence, self-doubt, and imposter syndrome' : primaryDesire === 'freedom' ? 'breaking free from the patterns that keep you stuck' : primaryDesire === 'purpose' ? 'finding your calling and stepping into it' : 'the exact patterns your quiz revealed'}.\n\nPlus you get the "Marisa in Your Pocket" AI companion — it's like having Marisa's guidance available 24/7, whenever that inner critic gets loud. For less than the price of a coffee a week, you get access to everything. And you can cancel anytime.`,
-    description: "Full access to Marisa Peer's complete library of 90+ personal development programmes, plus the AI coaching companion and a supportive community of women on the same journey.",
+    description: `Full access to Marisa Peer's complete library of 90+ personal development programmes, plus the AI coaching companion and a supportive community of ${women} on the same journey.`,
     benefits: [
       "90+ programmes covering confidence, relationships, money, health, and career",
       "Specific programmes that address your belief that " + belief,
       "\"Marisa in Your Pocket\" AI companion for guidance whenever you need it",
-      "A community of women who understand exactly what you're going through",
+      `A community of ${women} who understand exactly what you're going through`,
       "New content and live sessions added every month",
       "Cancel anytime — no lock-in, no risk",
     ],
-    proofPoint: "Thousands of women use the All Access Pass as their daily companion for transformation. Most say it's the best investment they've ever made in themselves — and at $19/month, it's the most accessible way to start.",
+    proofPoint: `Thousands of ${women} use the All Access Pass as their daily companion for transformation. Most say it's the best investment they've ever made in themselves — and at $19/month, it's the most accessible way to start.`,
     ctaText: "Start for $19/month",
     ctaUrl: "https://marisapeer.com",
   };

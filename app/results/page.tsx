@@ -75,6 +75,7 @@ function ResultsContent() {
   const userId = searchParams.get('id');
   const archetypeKey = (searchParams.get('archetype') || 'quiet_powerhouse') as Archetype;
   const nameParam = searchParams.get('name') || '';
+  const genderParam = searchParams.get('gender') || 'female';
 
   const [phase, setPhase] = useState<'analyzing' | 'ready'>('analyzing');
   const [userData, setUserData] = useState<any>(null);
@@ -84,6 +85,35 @@ function ResultsContent() {
 
   const archetype = archetypes[archetypeKey] || archetypes.quiet_powerhouse;
   const name = userData?.first_name || userData?.name || nameParam || 'friend';
+  const gender = userData?.gender || genderParam;
+
+  // Gender-adaptive language — replaces female-default text for other genders
+  const adaptGender = (text: string): string => {
+    if (gender === 'female' || gender === 'prefer_not' || !gender) return text;
+    let t = text;
+    if (gender === 'male') {
+      t = t.replace(/\bwomen\b/g, 'men').replace(/\bwoman\b/g, 'man');
+      t = t.replace(/\bgirl\b/g, 'boy').replace(/\bgirls\b/g, 'boys');
+      t = t.replace(/\bshe\b/g, 'he').replace(/\bShe\b/g, 'He');
+      t = t.replace(/\bherself\b/g, 'himself');
+      t = t.replace(/\bher own\b/g, 'his own').replace(/\bHer own\b/g, 'His own');
+      t = t.replace(/\bher life\b/g, 'his life').replace(/\bher light\b/g, 'his light');
+      t = t.replace(/\bher calling\b/g, 'his calling').replace(/\bher purpose\b/g, 'his purpose');
+      t = t.replace(/\bher energy\b/g, 'his energy').replace(/\bher worth\b/g, 'his worth');
+      t = t.replace(/\bher element\b/g, 'his element').replace(/\bher complexity\b/g, 'his complexity');
+    } else if (gender === 'non_binary') {
+      t = t.replace(/\bwomen\b/g, 'people').replace(/\bwoman\b/g, 'person');
+      t = t.replace(/\bgirl\b/g, 'child').replace(/\bgirls\b/g, 'children');
+      t = t.replace(/\bshe\b/g, 'they').replace(/\bShe\b/g, 'They');
+      t = t.replace(/\bherself\b/g, 'themselves');
+      t = t.replace(/\bher own\b/g, 'their own').replace(/\bHer own\b/g, 'Their own');
+      t = t.replace(/\bher life\b/g, 'their life').replace(/\bher light\b/g, 'their light');
+      t = t.replace(/\bher calling\b/g, 'their calling').replace(/\bher purpose\b/g, 'their purpose');
+      t = t.replace(/\bher energy\b/g, 'their energy').replace(/\bher worth\b/g, 'their worth');
+      t = t.replace(/\bher element\b/g, 'their element').replace(/\bher complexity\b/g, 'their complexity');
+    }
+    return t;
+  };
 
   // Build mock scores for demo if no data
   const scores = userData?.scores || userData || {
@@ -105,9 +135,9 @@ function ResultsContent() {
   // Calculate everything
   const transformationScores = calculateTransformationScores(scores, archetypeKey);
   const affirmations = getAffirmations(primaryBelief, archetypeKey, name);
-  const journal = getJournalPrompts(primaryBelief, originPattern, archetypeKey, name);
+  const journal = getJournalPrompts(primaryBelief, originPattern, archetypeKey, name, gender);
   const videos = getRecommendedVideos(archetypeKey, primaryBelief, primaryFear, conversionPath);
-  const products = getProductPrescription(conversionPath, archetypeKey, primaryDesire, primaryBelief, primaryFear, originPattern, name);
+  const products = getProductPrescription(conversionPath, archetypeKey, primaryDesire, primaryBelief, primaryFear, originPattern, name, gender);
 
   // Get quiz data from sessionStorage (works without Supabase)
   const [quizData, setQuizData] = useState<any>(null);
@@ -218,7 +248,7 @@ function ResultsContent() {
             </h1>
             <p className="text-base italic text-brand-dark/60 mb-4">"{archetype.tagline}"</p>
             <p className="text-sm text-brand-dark/50">
-              Only <strong>{archetype.percentage}</strong> of women share this archetype
+              Only <strong>{archetype.percentage}</strong> of people share this archetype
             </p>
             <button onClick={handleShare}
               className="mt-5 inline-flex items-center gap-2 bg-white/80 text-brand-dark text-xs font-medium px-4 py-2 rounded-full hover:bg-white transition-colors">
@@ -235,14 +265,14 @@ function ResultsContent() {
 
             {/* The answer — how they show up, not a job title */}
             <p className="text-brand-dark text-[15px] leading-[1.8] mb-4">
-              {archetype.bornToDo}
+              {adaptGender(archetype.bornToDo)}
             </p>
 
             {/* How they naturally help people */}
             <div className="bg-gradient-to-r from-brand-gold/5 to-brand-gold/10 rounded-xl p-5 mb-4 border border-brand-gold/10">
               <p className="text-[10px] uppercase tracking-[0.2em] text-brand-gold/80 mb-2 font-semibold">How You Naturally Help People</p>
               <p className="text-brand-dark/70 text-sm leading-relaxed">
-                {archetype.howYouHelp}
+                {adaptGender(archetype.howYouHelp)}
               </p>
             </div>
 
@@ -250,7 +280,7 @@ function ResultsContent() {
             <div className="bg-brand-dark/3 rounded-xl p-5 mb-6">
               <p className="text-[10px] uppercase tracking-[0.2em] text-brand-dark/30 mb-2 font-semibold">What Stepping Into This Looks Like</p>
               <p className="text-brand-dark/70 text-sm leading-relaxed">
-                {archetype.howToStepIn}
+                {adaptGender(archetype.howToStepIn)}
               </p>
             </div>
           </SectionCard>
@@ -480,7 +510,7 @@ function ResultsContent() {
           <SectionCard className="mb-4">
             <SectionLabel text={`${name}, read this before you go`} />
             <div className="space-y-4">
-              {products.primary.whyYou.split('\n\n').map((para, i) => (
+              {adaptGender(products.primary.whyYou).split('\n\n').map((para, i) => (
                 <p key={i} className="text-brand-dark/70 text-[15px] leading-[1.8]">{para}</p>
               ))}
             </div>
@@ -498,14 +528,14 @@ function ResultsContent() {
               </h3>
               {products.primary.price && <p className="text-brand-cream/50 text-xs mb-4">{products.primary.price}</p>}
               <p className="text-brand-cream/70 text-sm leading-relaxed mb-6">
-                {products.primary.description}
+                {adaptGender(products.primary.description)}
               </p>
 
               <div className="space-y-2.5 mb-6">
                 {products.primary.benefits.map((b, i) => (
                   <div key={i} className="flex items-start gap-2.5">
                     <span className="text-brand-gold text-sm mt-0.5">✓</span>
-                    <span className="text-brand-cream/70 text-sm leading-relaxed">{b}</span>
+                    <span className="text-brand-cream/70 text-sm leading-relaxed">{adaptGender(b)}</span>
                   </div>
                 ))}
               </div>
@@ -513,7 +543,7 @@ function ResultsContent() {
               {/* Social proof */}
               <div className="bg-brand-cream/5 rounded-xl p-4 mb-6 border border-brand-cream/10">
                 <p className="text-brand-cream/50 text-xs leading-relaxed italic">
-                  {products.primary.proofPoint}
+                  {adaptGender(products.primary.proofPoint)}
                 </p>
               </div>
 

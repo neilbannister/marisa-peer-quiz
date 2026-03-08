@@ -7,7 +7,7 @@ export interface QuizOption {
 
 export interface QuizQuestion {
   id: number;
-  type: 'choice' | 'name' | 'email';
+  type: 'choice' | 'name' | 'email' | 'gender';
   header?: string; // shown above question, uses {name}
   question: string; // uses {name} placeholder
   subtext?: string;
@@ -70,7 +70,7 @@ export const questions: QuizQuestion[] = [
     options: [
       {
         key: 'A',
-        text: "I was the \"good girl\"",
+        text: "I was the \"good one\"",
         subtext: "Responsible, helpful, never causing trouble. I earned my place by being useful.",
         scores: { healer: 2, powerhouse: 1, deep_feeler: 1, origin_parentification: 3, belief_earn_love: 3 }
       },
@@ -109,6 +109,17 @@ export const questions: QuizQuestion[] = [
     subtext: "We ask because your results will be genuinely personalised to YOUR answers.",
     framework: "Name capture for personalisation",
     personalisation: "Used 30+ times throughout the entire experience"
+  },
+
+  // ─── QUESTION 3b: GENDER ─────────────────────────────
+  {
+    id: 16,
+    type: 'gender',
+    header: "One more thing, {name}...",
+    question: "How do you identify?",
+    subtext: "This helps us personalise your results and coaching.",
+    framework: "Gender for personalisation of language",
+    personalisation: "Adapts all pronouns, references, and coaching language"
   },
 
   // ─── QUESTION 4: LIMITING BELIEF ──────────────────────
