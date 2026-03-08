@@ -1,27 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 import { buildReportPrompt } from '@/lib/report-prompt';
-import { calculateResults, QuizScores } from '@/lib/scoring';
 
 export const maxDuration = 60; // Allow up to 60 seconds for AI generation
 
 export async function POST(req: NextRequest) {
   try {
-    const { userId } = await req.json();
+    const body = await req.json();
+    const { userId, quizData } = body;
 
     if (!process.env.OPENAI_API_KEY) {
       return NextResponse.json({
-        report: generateFallbackReport('friend'),
+        report: generateFallbackReport(quizData?.name || 'friend'),
         generated: false,
         message: 'OpenAI API key not configured. Using template report.',
       });
     }
 
-    // Fetch user data
+    // Try to get user data from Supabase first
     let userData: any = null;
     let answersData: any[] = [];
 
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+    if (userId && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
       const { getServerSupabase } = await import('@/lib/supabase');
       const supabase = getServerSupabase();
 
@@ -39,6 +39,68 @@ export async function POST(req: NextRequest) {
 
       userData = user;
       answersData = answers || [];
+    }
+
+    // If no Supabase data, try the in-memory store
+    if (!userData && userId) {
+      try {
+        const memRes = await fetch(`${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/api/quiz/submit?id=${userId}`);
+        if (memRes.ok) {
+          const memData = await memRes.json();
+          if (memData && !memData.error) {
+            userData = {
+              first_name: memData.name,
+              primary_archetype: memData.result?.archetype,
+              conversion_path: memData.result?.conversionPath,
+              primary_belief: memData.result?.primaryBelief,
+              primary_fear: memData.result?.primaryFear,
+              primary_desire: memData.result?.primaryDesire,
+              body_pattern: memData.result?.bodyPattern,
+              relationship_pattern: memData.result?.relationshipPattern,
+              money_belief: memData.result?.moneyBelief,
+              origin_pattern: memData.result?.originPattern,
+              purpose_energy: memData.result?.purposeEnergy,
+              healer_ability: memData.result?.healerAbility,
+              rtt_intent: memData.scores?.rtt_intent || 0,
+              readiness_score: memData.scores?.readiness || 0,
+              investment_readiness: memData.scores?.investment || 0,
+              age_range: memData.ageRange,
+            };
+            answersData = (memData.answers || []).map((a: any) => ({
+              question_number: a.questionId,
+              answer_key: a.answerKey,
+              answer_text: a.answerText,
+            }));
+          }
+        }
+      } catch {}
+    }
+
+    // If still no data, use quizData passed directly from the client
+    if (!userData && quizData) {
+      userData = {
+        first_name: quizData.name,
+        primary_archetype: quizData.result?.archetype,
+        conversion_path: quizData.result?.conversionPath,
+        primary_belief: quizData.result?.primaryBelief,
+        primary_fear: quizData.result?.primaryFear,
+        primary_desire: quizData.result?.primaryDesire,
+        body_pattern: quizData.result?.bodyPattern,
+        relationship_pattern: quizData.result?.relationshipPattern,
+        money_belief: quizData.result?.moneyBelief,
+        origin_pattern: quizData.result?.originPattern,
+        purpose_energy: quizData.result?.purposeEnergy,
+        healer_ability: quizData.result?.healerAbility,
+        rtt_intent: quizData.scores?.rtt_intent || 0,
+        readiness_score: quizData.scores?.readiness || 0,
+        investment_readiness: quizData.scores?.investment || 0,
+        age_range: quizData.ageRange,
+      };
+      answersData = (quizData.answers || []).map((a: any) => ({
+        question_number: a.questionId,
+        answer_key: a.answerKey,
+        answer_text: a.answerText,
+      }));
     }
 
     if (!userData) {
@@ -71,7 +133,7 @@ export async function POST(req: NextRequest) {
       } as any,
     };
 
-    const formattedAnswers = answersData.map(a => ({
+    const formattedAnswers = answersData.map((a: any) => ({
       questionId: a.question_number,
       answerKey: a.answer_key,
       answerText: a.answer_text,
@@ -102,8 +164,8 @@ export async function POST(req: NextRequest) {
 
     const report = completion.choices[0]?.message?.content || generateFallbackReport(userData.first_name);
 
-    // Save report to database
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+    // Save report to database if Supabase is available
+    if (userId && process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
       const { getServerSupabase } = await import('@/lib/supabase');
       const supabase = getServerSupabase();
       await supabase
@@ -144,7 +206,7 @@ And every single one of them had the same thing in common: a belief, installed i
 
 ${name}, you are enough. Not when you achieve more. Not when you help more people. Not when you finally figure it all out. Right now. Exactly as you are.
 
-Your full personalised coaching report, generated from your specific answers, requires the OpenAI API to be connected. Please see the setup guide to enable AI-powered report generation.
+The journey ahead of you isn't about becoming someone new. It's about remembering who you were before the world told you to be someone else.
 
 With love,
 Marisa`;

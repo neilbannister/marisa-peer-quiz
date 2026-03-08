@@ -109,29 +109,39 @@ function ResultsContent() {
   const videos = getRecommendedVideos(archetypeKey, primaryBelief, primaryFear, conversionPath);
   const products = getProductPrescription(conversionPath, archetypeKey, primaryDesire, primaryBelief, primaryFear, originPattern, name);
 
-  // Fetch user data
+  // Get quiz data from sessionStorage (works without Supabase)
+  const [quizData, setQuizData] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const stored = sessionStorage.getItem('quizData');
+      if (stored) setQuizData(JSON.parse(stored));
+    } catch {}
+  }, []);
+
+  // Fetch user data from API
   useEffect(() => {
     if (userId) {
       fetch(`/api/quiz/submit?id=${userId}`)
         .then(r => r.json())
-        .then(data => setUserData(data))
+        .then(data => { if (data && !data.error) setUserData(data); })
         .catch(() => {});
     }
   }, [userId]);
 
-  // Generate AI report in background
+  // Generate AI report in background — passes quizData as fallback
   useEffect(() => {
-    if (userId && phase === 'ready') {
+    if (phase === 'ready') {
       fetch('/api/report/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId }),
+        body: JSON.stringify({ userId, quizData }),
       })
         .then(r => r.json())
         .then(data => setReport(data.report || ''))
         .catch(() => {});
     }
-  }, [userId, phase]);
+  }, [phase, userId, quizData]);
 
   // Analyzing timing
   useEffect(() => {

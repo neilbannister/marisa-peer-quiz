@@ -86,11 +86,29 @@ export default function QuizPage() {
 
       const data = await res.json();
 
+      // Store quiz data for report generation
+      try {
+        sessionStorage.setItem('quizData', JSON.stringify({
+          name, email, ageRange, answers: answerList, result, scores,
+        }));
+      } catch {}
+
       // Navigate to results page with the user ID
       router.push(`/results?id=${data.userId}&archetype=${result.archetype}&name=${encodeURIComponent(name)}`);
     } catch (err) {
       // If API fails, still navigate with data in URL params
       const result = calculateResults(scores);
+
+      // Store quiz data for report generation
+      try {
+        const answerList = Object.entries(answers).map(([qId, ans]) => ({
+          questionId: parseInt(qId), answerKey: ans.key, answerText: ans.text,
+        }));
+        sessionStorage.setItem('quizData', JSON.stringify({
+          name, email, ageRange, answers: answerList, result, scores,
+        }));
+      } catch {}
+
       router.push(`/results?archetype=${result.archetype}&name=${encodeURIComponent(name)}`);
     }
   };
