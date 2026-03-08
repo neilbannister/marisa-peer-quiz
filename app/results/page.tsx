@@ -390,50 +390,7 @@ function ResultsContent() {
           </SectionCard>
         </Section>
 
-        {/* ━━━ 5. YOUR JOURNAL PROMPT ━━━ */}
-        <Section delay={0.25}>
-          <SectionCard className="bg-gradient-to-br from-white to-amber-50/50">
-            <SectionLabel text="Your Breakthrough Journal Prompt" />
-            <p className="text-sm text-brand-dark/50 mb-4">
-              Marisa says: "What you don't make conscious controls you." This prompt is designed to surface the specific pattern your quiz revealed.
-            </p>
-            <div className="bg-white rounded-xl p-5 border border-brand-gold/15 mb-4">
-              <p className="text-brand-dark text-[15px] leading-relaxed">
-                {journal.deepDive}
-              </p>
-            </div>
-            <details className="group">
-              <summary className="text-xs text-brand-gold font-medium cursor-pointer hover:underline">
-                + Two more journal prompts for this week
-              </summary>
-              <div className="mt-3 space-y-3">
-                <div className="bg-white/70 rounded-lg p-4 border border-brand-dark/5">
-                  <p className="text-[10px] uppercase tracking-wider text-brand-dark/30 mb-1">Daily Reflection</p>
-                  <p className="text-sm text-brand-dark/70">{journal.dailyReflection}</p>
-                </div>
-                <div className="bg-white/70 rounded-lg p-4 border border-brand-dark/5">
-                  <p className="text-[10px] uppercase tracking-wider text-brand-dark/30 mb-1">Letter to Future {name}</p>
-                  <p className="text-sm text-brand-dark/70">{journal.futureself}</p>
-                </div>
-              </div>
-            </details>
-          </SectionCard>
-        </Section>
-
-        {/* ━━━ MINI CTA 1: After journal ━━━ */}
-        <Section delay={0.27}>
-          <div className="bg-brand-dark/5 rounded-2xl p-5 text-center">
-            <p className="text-sm text-brand-dark/60 mb-2">
-              {name}, journaling surfaces what's hidden — but it can't rewire it. The belief that {beliefLabels[primaryBelief] || "you're not enough"} was installed before you could spell your own name. Shifting it requires subconscious work.
-            </p>
-            <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
-              className="text-brand-gold text-sm font-semibold hover:underline">
-              {products.primary.ctaText} →
-            </a>
-          </div>
-        </Section>
-
-        {/* ━━━ 6. AI COACHING REPORT (full, not condensed) ━━━ */}
+        {/* ━━━ 5. AI COACHING REPORT (full, not condensed) ━━━ */}
         {report && (
           <Section delay={0.3}>
             <SectionCard>
@@ -463,6 +420,36 @@ function ResultsContent() {
             </SectionCard>
           </Section>
         )}
+
+        {/* ━━━ 6. YOUR JOURNAL PROMPT ━━━ */}
+        <Section delay={0.32}>
+          <SectionCard className="bg-gradient-to-br from-white to-amber-50/50">
+            <SectionLabel text="Your Breakthrough Journal Prompt" />
+            <p className="text-sm text-brand-dark/50 mb-4">
+              Marisa says: "What you don't make conscious controls you." This prompt is designed to surface the specific pattern your quiz revealed.
+            </p>
+            <div className="bg-white rounded-xl p-5 border border-brand-gold/15 mb-4">
+              <p className="text-brand-dark text-[15px] leading-relaxed">
+                {journal.deepDive}
+              </p>
+            </div>
+            <details className="group">
+              <summary className="text-xs text-brand-gold font-medium cursor-pointer hover:underline">
+                + Two more journal prompts for this week
+              </summary>
+              <div className="mt-3 space-y-3">
+                <div className="bg-white/70 rounded-lg p-4 border border-brand-dark/5">
+                  <p className="text-[10px] uppercase tracking-wider text-brand-dark/30 mb-1">Daily Reflection</p>
+                  <p className="text-sm text-brand-dark/70">{journal.dailyReflection}</p>
+                </div>
+                <div className="bg-white/70 rounded-lg p-4 border border-brand-dark/5">
+                  <p className="text-[10px] uppercase tracking-wider text-brand-dark/30 mb-1">Letter to Future {name}</p>
+                  <p className="text-sm text-brand-dark/70">{journal.futureself}</p>
+                </div>
+              </div>
+            </details>
+          </SectionCard>
+        </Section>
 
         {/* ━━━ 7. SUPPORT VIDEOS ━━━ */}
         <Section delay={0.35}>
@@ -521,7 +508,7 @@ function ResultsContent() {
               <h3 className="font-serif text-2xl text-brand-cream mb-2">
                 {products.primary.name}
               </h3>
-              <p className="text-brand-cream/50 text-xs mb-4">{products.primary.price}</p>
+              {products.primary.price && <p className="text-brand-cream/50 text-xs mb-4">{products.primary.price}</p>}
               <p className="text-brand-cream/70 text-sm leading-relaxed mb-6">
                 {products.primary.description}
               </p>
@@ -557,7 +544,7 @@ function ResultsContent() {
             <div className="mt-4 bg-white rounded-2xl p-5 border border-brand-dark/5 text-center">
               <p className="text-xs text-brand-dark/40 mb-2">Or start here:</p>
               <p className="font-medium text-sm text-brand-dark mb-1">{products.secondary.name}</p>
-              <p className="text-xs text-brand-dark/40 mb-3">{products.secondary.price}</p>
+              {products.secondary.price && <p className="text-xs text-brand-dark/40 mb-3">{products.secondary.price}</p>}
               <a href={products.secondary.ctaUrl} target="_blank" rel="noopener noreferrer"
                 className="text-brand-gold text-sm font-medium hover:underline">
                 {products.secondary.ctaText} →

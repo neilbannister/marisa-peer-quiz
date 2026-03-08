@@ -452,7 +452,7 @@ export function getProductPrescription(
   const rttIntegrated: ProductPrescription = {
     tag: "MARISA'S #1 RECOMMENDATION FOR YOU",
     name: "RTT Integrated Certification",
-    price: "Speak with an advisor about investment options",
+    price: "",
     whyYou: `${name}, let me be direct with you. Your quiz didn't just reveal your archetype — it revealed something I rarely see this clearly. You scored exceptionally high on healer potential. That instinct you have — the one where people always come to you with their problems, where you can feel what someone needs before they say it — that's not just empathy. That's a therapeutic gift.\n\nYour deepest desire is ${desire}. And here's what I've learned after 30 years: the fastest way to heal yourself is to learn how to heal others. Every single belief your quiz uncovered — the feeling that ${belief}, the fear of ${fear}, the pattern that started with ${origin} — RTT was built to resolve exactly these patterns. Not in years of talk therapy. In sessions.\n\nYou wouldn't just be getting a certification. You'd be getting the tools to rewire your OWN mind first — and then build a career doing the same for others.`,
     description: "RTT Integrated is Marisa Peer's flagship certification — the same methodology she's used on royalty, Olympic athletes, and CEOs. It trains you to become a certified Rapid Transformational Therapist with a full client practice.",
     benefits: [
@@ -497,7 +497,7 @@ export function getProductPrescription(
   const premiumConfidence: ProductPrescription = {
     tag: "YOUR PERSONALISED TRANSFORMATION",
     name: "Confidence & Self-Worth Programme",
-    price: "$3,000 – $6,000",
+    price: "",
     whyYou: `${name}, I want to be honest with you about what your quiz revealed. Your scores show a pattern I see often in women who are highly capable on the outside but deeply struggling on the inside. The belief that ${belief} isn't just an idea you carry — it's running your entire life. It's why you ${primaryFear === 'failure' ? "hold yourself back from the things you actually want" : primaryFear === 'judgment' ? "dim your light so others feel comfortable" : primaryFear === 'too_late' ? "keep telling yourself the window has closed" : "can't seem to break free from the same cycles"}.\n\nThis pattern started with ${origin}. And here's what I need you to understand: no amount of self-help books, affirmations, or willpower is going to shift something that was installed in your subconscious before you were 7 years old. You need someone trained in root cause therapy to go in and rewire it.\n\nThis programme pairs you with a dedicated RTT-trained coach who will work with you one-on-one over 90 days. They'll target the exact beliefs your quiz identified — not generic "confidence building." Targeted, surgical, permanent change.`,
     description: "A 90-180 day guided transformation with a certified RTT practitioner, working one-on-one on the specific beliefs and patterns your quiz identified.",
     benefits: [
