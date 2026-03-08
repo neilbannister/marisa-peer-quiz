@@ -376,101 +376,185 @@ export function getRecommendedVideos(
 
 
 // ─────────────────────────────────────────────────
-// PRODUCT PRESCRIPTIONS (framed as coaching advice)
+// PRODUCT PRESCRIPTIONS (deeply personal sell)
 // ─────────────────────────────────────────────────
 
 export interface ProductPrescription {
-  tag: string; // e.g., "YOUR #1 RECOMMENDATION"
+  tag: string;
   name: string;
   price: string;
-  description: string;
+  whyYou: string;        // personalised "why this is for YOU" paragraph
+  description: string;   // what the product is
   benefits: string[];
+  proofPoint: string;    // social proof or credibility line
   ctaText: string;
   ctaUrl: string;
   urgency?: string;
 }
 
+// Human-readable labels for building personal copy
+export const beliefLabels: Record<string, string> = {
+  not_enough_capability: "you don't feel qualified enough",
+  not_enough_inherent: "you're not inherently enough",
+  not_lovable_authentic: "people won't love the real you",
+  dont_deserve_good: "you don't deserve good things",
+  learned_helplessness: "nothing you do will change things",
+  not_important: "your needs don't matter",
+  earn_love: "you have to earn love through what you do",
+};
+
+const fearLabels: Record<string, string> = {
+  failure: "failing and proving your inner critic right",
+  too_late: "it being too late to change your life",
+  judgment: "being judged by the people around you",
+  rejection: "being rejected if you show who you really are",
+  not_good_enough: "not being good enough to pull this off",
+  abandonment: "being left behind if you change",
+  success: "actually succeeding and not knowing how to handle it",
+};
+
+const desireLabels: Record<string, string> = {
+  self_worth: "to finally feel like you are enough",
+  freedom: "to build a life on your own terms",
+  purpose: "to find work that actually means something",
+  connection: "to have deeper, more authentic relationships",
+  healing: "to heal the wounds you've been carrying",
+  confidence: "to walk into any room and feel like you belong",
+  impact: "to make a real difference in other people's lives",
+};
+
+const originLabels: Record<string, string> = {
+  parentification: "being the responsible one in your family — the little girl who had to grow up too fast",
+  invalidation: "being told you were too much, too sensitive, too emotional",
+  neglect: "having your needs consistently come last",
+  conditional_love: "learning that love was something you had to earn through achievement",
+  absorbed_pain: "absorbing everyone else's pain to keep the peace",
+};
+
 export function getProductPrescription(
   conversionPath: string,
   archetype: Archetype,
   primaryDesire: string,
+  primaryBelief: string,
+  primaryFear: string,
+  originPattern: string,
   name: string
 ): { primary: ProductPrescription; secondary?: ProductPrescription } {
 
-  const prescriptions: Record<string, ProductPrescription> = {
-    rtt_integrated: {
-      tag: "MARISA'S RECOMMENDATION FOR YOU",
-      name: "RTT Integrated Certification",
-      price: "Speak with an advisor about investment options",
-      description: `${name}, based on everything your quiz revealed — your natural healing ability, your desire to help others, and your readiness for change — I believe RTT Integrated is the path you've been searching for. It's not just a certification. It's the vehicle for your calling.`,
-      benefits: [
-        "Become a certified RTT practitioner in months, not years",
-        "Learn the exact methodology used on royalty, CEOs, and Olympic athletes",
-        "Build a practice that gives you financial freedom AND deep purpose",
-        "Join 18,000+ graduates who are transforming lives worldwide",
-        "Includes business training to help you attract clients from day one",
-      ],
-      ctaText: "Book Your Free Discovery Call",
-      ctaUrl: "https://go.applyrtt.com/integrated-v-app",
-      urgency: "Free 30-minute call with a Marisa Peer Admissions Advisor",
-    },
-    peer_hypnosis: {
-      tag: "YOUR STARTING POINT",
-      name: "Peer Hypnosis Method Certification",
-      price: "$2,950",
-      description: `${name}, you have the natural empathy and insight to start helping people now. The Peer Hypnosis Method gives you a powerful, certified toolkit — and it's the perfect first step to see if this is your calling.`,
-      benefits: [
-        "Certification with a personal development angle",
-        "Learn foundational hypnosis techniques from Marisa Peer",
-        "Start practising with friends, family, or first clients",
-        "A stepping stone to the full RTT certification if you choose",
-      ],
-      ctaText: "Learn More About Peer Hypnosis",
-      ctaUrl: "https://marisapeer.com/rtt-training-courses/",
-    },
-    premium_confidence: {
-      tag: "YOUR TRANSFORMATION PROGRAMME",
-      name: "Confidence & Self-Worth Programme",
-      price: "$3,000 – $6,000",
-      description: `${name}, your quiz reveals that before anything else changes — your career, your relationships, your income — this inner work needs to happen. This isn't a course. It's a 90-day guided transformation with a dedicated RTT-trained coach.`,
-      benefits: [
-        "Dedicated RTT coach guiding your transformation",
-        "90-180 day structured programme",
-        "Root cause work on the specific beliefs your quiz identified",
-        "Measurable, lasting change — not temporary motivation",
-      ],
-      ctaText: "Book a Free Consultation",
-      ctaUrl: "https://marisapeer.com",
-    },
-    iam_enough: {
-      tag: "START HERE",
-      name: "I Am Enough Course",
-      price: "$297 – $497",
-      description: `Everything your quiz revealed traces back to one belief, ${name}. This course was designed specifically to rewire it. Over 1 million people have been impacted by the I Am Enough movement.`,
-      benefits: [
-        "Marisa's signature programme for rewiring your core belief",
-        "Self-paced but deeply guided",
-        "Includes powerful hypnotherapy audio sessions",
-        "The foundation for everything that comes next",
-      ],
-      ctaText: "Start I Am Enough",
-      ctaUrl: "https://marisapeer.com/iamenoughcourse/",
-    },
-    community: {
-      tag: "YOUR FIRST STEP",
-      name: "All Access Transformation Pass",
-      price: "$19/month",
-      description: `${name}, transformation is a journey. For less than the price of a coffee a week, you get Marisa's complete library of 90+ programmes plus the AI companion that delivers her guidance 24/7.`,
-      benefits: [
-        "90+ personal development programmes",
-        "\"Marisa in Your Pocket\" AI companion",
-        "Supportive community of women on the same journey",
-        "New content and live sessions every month",
-        "Cancel anytime",
-      ],
-      ctaText: "Start for $19/month",
-      ctaUrl: "https://marisapeer.com",
-    },
+  const belief = beliefLabels[primaryBelief] || "you're not enough";
+  const fear = fearLabels[primaryFear] || "failing";
+  const desire = desireLabels[primaryDesire] || "to feel like you are enough";
+  const origin = originLabels[originPattern] || "childhood experiences that shaped your beliefs";
+
+  // ═══════════════════════════════════════════════
+  // PATH A: RTT INTEGRATED CERTIFICATION
+  // ═══════════════════════════════════════════════
+  const rttIntegrated: ProductPrescription = {
+    tag: "MARISA'S #1 RECOMMENDATION FOR YOU",
+    name: "RTT Integrated Certification",
+    price: "Speak with an advisor about investment options",
+    whyYou: `${name}, let me be direct with you. Your quiz didn't just reveal your archetype — it revealed something I rarely see this clearly. You scored exceptionally high on healer potential. That instinct you have — the one where people always come to you with their problems, where you can feel what someone needs before they say it — that's not just empathy. That's a therapeutic gift.\n\nYour deepest desire is ${desire}. And here's what I've learned after 30 years: the fastest way to heal yourself is to learn how to heal others. Every single belief your quiz uncovered — the feeling that ${belief}, the fear of ${fear}, the pattern that started with ${origin} — RTT was built to resolve exactly these patterns. Not in years of talk therapy. In sessions.\n\nYou wouldn't just be getting a certification. You'd be getting the tools to rewire your OWN mind first — and then build a career doing the same for others.`,
+    description: "RTT Integrated is Marisa Peer's flagship certification — the same methodology she's used on royalty, Olympic athletes, and CEOs. It trains you to become a certified Rapid Transformational Therapist with a full client practice.",
+    benefits: [
+      "Become a certified RTT practitioner — trained by Marisa Peer herself",
+      "Learn to resolve issues like anxiety, depression, and limiting beliefs in 1-3 sessions (not months or years)",
+      "Includes full business training so you can attract paying clients from day one",
+      "Work from anywhere — build a practice around your life, not the other way around",
+      "Join a global community of 18,000+ graduates who are changing lives in 80+ countries",
+      "The average RTT practitioner charges $250-500 per session",
+    ],
+    proofPoint: "Over 18,000 women have qualified as RTT practitioners. Many left careers they hated and now earn a full-time income doing work that gives them goosebumps every single day.",
+    ctaText: "Book Your Free Discovery Call",
+    ctaUrl: "https://go.applyrtt.com/integrated-v-app",
+    urgency: "A free 30-minute call with a Marisa Peer Admissions Advisor — no pressure, just clarity on whether this is right for you.",
+  };
+
+  // ═══════════════════════════════════════════════
+  // PATH B: PEER HYPNOSIS METHOD
+  // ═══════════════════════════════════════════════
+  const peerHypnosis: ProductPrescription = {
+    tag: "THE PERFECT FIRST STEP FOR YOU",
+    name: "Peer Hypnosis Method Certification",
+    price: "$2,950",
+    whyYou: `${name}, your quiz revealed something interesting. You have genuine healer potential — that ability to sense what people need, to hold space, to make others feel safe. But I also noticed something else: a hesitation. A part of you that isn't sure you're ready for the full leap yet.\n\nThat hesitation? It's connected to the belief that ${belief}. It's the same pattern that started with ${origin}. And here's the beautiful thing — the Peer Hypnosis Method doesn't just teach you to help others. The first person you'll practise on is yourself.\n\nYou told me your biggest fear is ${fear}. This programme is designed so you can test your calling without the pressure of a massive commitment. Think of it as dipping your toes in — except the water is warm, and most women who start here end up diving in completely.`,
+    description: "The Peer Hypnosis Method is a certified training that gives you foundational hypnotherapy skills — enough to start helping friends, family, and even your first paying clients.",
+    benefits: [
+      "A recognised certification you can use immediately",
+      "Learn Marisa's core techniques for rewiring beliefs at the subconscious level",
+      "Start practising with people you know — and see real results",
+      "Designed as a stepping stone — many graduates go on to full RTT certification",
+      "Self-paced learning that fits around your current life",
+      "Fraction of the investment of the full certification — with real, tangible skills",
+    ],
+    proofPoint: "Most women who complete the Peer Hypnosis Method say it changed their life before they ever used it on anyone else — because the first mind you rewire is your own.",
+    ctaText: "Learn More About Peer Hypnosis",
+    ctaUrl: "https://marisapeer.com/rtt-training-courses/",
+  };
+
+  // ═══════════════════════════════════════════════
+  // PATH C: PREMIUM CONFIDENCE PROGRAMME
+  // ═══════════════════════════════════════════════
+  const premiumConfidence: ProductPrescription = {
+    tag: "YOUR PERSONALISED TRANSFORMATION",
+    name: "Confidence & Self-Worth Programme",
+    price: "$3,000 – $6,000",
+    whyYou: `${name}, I want to be honest with you about what your quiz revealed. Your scores show a pattern I see often in women who are highly capable on the outside but deeply struggling on the inside. The belief that ${belief} isn't just an idea you carry — it's running your entire life. It's why you ${primaryFear === 'failure' ? "hold yourself back from the things you actually want" : primaryFear === 'judgment' ? "dim your light so others feel comfortable" : primaryFear === 'too_late' ? "keep telling yourself the window has closed" : "can't seem to break free from the same cycles"}.\n\nThis pattern started with ${origin}. And here's what I need you to understand: no amount of self-help books, affirmations, or willpower is going to shift something that was installed in your subconscious before you were 7 years old. You need someone trained in root cause therapy to go in and rewire it.\n\nThis programme pairs you with a dedicated RTT-trained coach who will work with you one-on-one over 90 days. They'll target the exact beliefs your quiz identified — not generic "confidence building." Targeted, surgical, permanent change.`,
+    description: "A 90-180 day guided transformation with a certified RTT practitioner, working one-on-one on the specific beliefs and patterns your quiz identified.",
+    benefits: [
+      "A dedicated RTT-trained coach matched to your specific needs",
+      "Root cause work on the exact belief your quiz identified: that " + belief,
+      "Personalised hypnotherapy recordings you'll use between sessions",
+      "90-180 day structured programme — long enough for real, lasting change",
+      "Addresses the pattern from its origin — not just the symptoms",
+      "Most clients report a fundamental shift within the first 3 sessions",
+    ],
+    proofPoint: "Marisa's methodology has been proven in clinical studies to create lasting change in 1-3 sessions. This programme gives you multiple sessions focused entirely on YOUR specific patterns.",
+    ctaText: "Book a Free Consultation",
+    ctaUrl: "https://marisapeer.com",
+  };
+
+  // ═══════════════════════════════════════════════
+  // PATH D: I AM ENOUGH COURSE
+  // ═══════════════════════════════════════════════
+  const iamEnough: ProductPrescription = {
+    tag: "START HERE — THIS WAS MADE FOR YOU",
+    name: "I Am Enough Course",
+    price: "$297 – $497",
+    whyYou: `${name}, I want you to read this carefully. Every single thing your quiz revealed — the belief that ${belief}, the fear of ${fear}, the pattern that began with ${origin}, even your desire ${desire} — all of it traces back to one root belief: "I am not enough."\n\nI didn't design this course for everyone. I designed it for women exactly like you. Women who are smart enough to know something is holding them back, but who've never been able to name it — let alone fix it. Women who've tried journaling, therapy, self-help books, and still feel stuck in the same loop.\n\nThe I Am Enough course doesn't just teach you to think differently. It uses hypnotherapy to rewire the belief at its source — in your subconscious mind, where it was installed during ${origin}. Over 1 million people have been impacted by this movement. And most of them started exactly where you are right now.`,
+    description: "Marisa Peer's signature self-paced programme that uses hypnotherapy to permanently rewire the core belief that drives almost every struggle: 'I am not enough.'",
+    benefits: [
+      "Directly targets the #1 belief your quiz identified: that " + belief,
+      "Includes powerful hypnotherapy audio sessions you can use for life",
+      "Self-paced — do it on your own time, in your own space",
+      "Uses the same RTT methodology used by royalty, athletes, and CEOs",
+      "Most people report feeling different within the first session",
+      "The foundation Marisa recommends before any other programme",
+    ],
+    proofPoint: "Over 1 million people have been part of the I Am Enough movement. It's the single programme Marisa recommends as a starting point for almost everyone — because until this belief changes, nothing else can.",
+    ctaText: "Start I Am Enough",
+    ctaUrl: "https://marisapeer.com/iamenoughcourse/",
+  };
+
+  // ═══════════════════════════════════════════════
+  // PATH E: COMMUNITY / ALL ACCESS
+  // ═══════════════════════════════════════════════
+  const community: ProductPrescription = {
+    tag: "YOUR FIRST STEP",
+    name: "All Access Transformation Pass",
+    price: "$19/month",
+    whyYou: `${name}, I know what it's like to feel like you want to change but not know where to start. Your quiz revealed the belief that ${belief}, and a fear of ${fear}. Those are real. And they didn't come from nowhere — they started with ${origin}.\n\nThe good news? You don't have to figure this out alone, and you don't have to make a massive commitment to begin. The All Access Pass gives you Marisa's entire library of 90+ programmes — including specific work on ${primaryDesire === 'self_worth' ? 'self-worth and the "not enough" belief' : primaryDesire === 'confidence' ? 'confidence, self-doubt, and imposter syndrome' : primaryDesire === 'freedom' ? 'breaking free from the patterns that keep you stuck' : primaryDesire === 'purpose' ? 'finding your calling and stepping into it' : 'the exact patterns your quiz revealed'}.\n\nPlus you get the "Marisa in Your Pocket" AI companion — it's like having Marisa's guidance available 24/7, whenever that inner critic gets loud. For less than the price of a coffee a week, you get access to everything. And you can cancel anytime.`,
+    description: "Full access to Marisa Peer's complete library of 90+ personal development programmes, plus the AI coaching companion and a supportive community of women on the same journey.",
+    benefits: [
+      "90+ programmes covering confidence, relationships, money, health, and career",
+      "Specific programmes that address your belief that " + belief,
+      "\"Marisa in Your Pocket\" AI companion for guidance whenever you need it",
+      "A community of women who understand exactly what you're going through",
+      "New content and live sessions added every month",
+      "Cancel anytime — no lock-in, no risk",
+    ],
+    proofPoint: "Thousands of women use the All Access Pass as their daily companion for transformation. Most say it's the best investment they've ever made in themselves — and at $19/month, it's the most accessible way to start.",
+    ctaText: "Start for $19/month",
+    ctaUrl: "https://marisapeer.com",
   };
 
   let primary: ProductPrescription;
@@ -478,23 +562,23 @@ export function getProductPrescription(
 
   switch (conversionPath) {
     case 'A':
-      primary = prescriptions.rtt_integrated;
-      secondary = prescriptions.iam_enough;
+      primary = rttIntegrated;
+      secondary = iamEnough;
       break;
     case 'B':
-      primary = prescriptions.peer_hypnosis;
-      secondary = prescriptions.iam_enough;
+      primary = peerHypnosis;
+      secondary = iamEnough;
       break;
     case 'C':
-      primary = prescriptions.premium_confidence;
-      secondary = prescriptions.community;
+      primary = premiumConfidence;
+      secondary = community;
       break;
     case 'D':
-      primary = prescriptions.iam_enough;
-      secondary = prescriptions.community;
+      primary = iamEnough;
+      secondary = community;
       break;
     default:
-      primary = prescriptions.community;
+      primary = community;
       break;
   }
 

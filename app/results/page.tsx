@@ -11,6 +11,7 @@ import {
   getJournalPrompts,
   getRecommendedVideos,
   getProductPrescription,
+  beliefLabels,
   ScoreDimension,
 } from '@/lib/coaching-content';
 
@@ -106,7 +107,7 @@ function ResultsContent() {
   const affirmations = getAffirmations(primaryBelief, archetypeKey, name);
   const journal = getJournalPrompts(primaryBelief, originPattern, archetypeKey, name);
   const videos = getRecommendedVideos(archetypeKey, primaryBelief, primaryFear, conversionPath);
-  const products = getProductPrescription(conversionPath, archetypeKey, primaryDesire, name);
+  const products = getProductPrescription(conversionPath, archetypeKey, primaryDesire, primaryBelief, primaryFear, originPattern, name);
 
   // Fetch user data
   useEffect(() => {
@@ -288,8 +289,12 @@ function ResultsContent() {
             <div className="mt-5 pt-5 border-t border-brand-dark/5">
               <p className="text-xs text-brand-dark/40 mb-2">
                 {conversionPath === 'A'
-                  ? `${name}, this is just a taste. RTT goes 10x deeper than anything you'll find on YouTube.`
-                  : `${name}, this video is the beginning. The real transformation happens when you go deeper.`}
+                  ? `${name}, this video explains the method — but RTT goes far deeper than anything on YouTube. Your quiz showed healer potential that most people don't have.`
+                  : conversionPath === 'B'
+                  ? `${name}, this is Marisa's public teaching. The Peer Hypnosis Method teaches you the techniques she actually uses in sessions — starting with your own mind.`
+                  : conversionPath === 'C'
+                  ? `${name}, watching is one thing. But the belief that ${beliefLabels[primaryBelief] || "you're not enough"} won't shift from a video alone. It needs root cause work.`
+                  : `${name}, this talk has changed millions of lives. But imagine having Marisa's full methodology working on the specific pattern your quiz revealed.`}
               </p>
               <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
                 className="text-brand-gold text-xs font-semibold hover:underline">
@@ -382,7 +387,7 @@ function ResultsContent() {
         <Section delay={0.27}>
           <div className="bg-brand-dark/5 rounded-2xl p-5 text-center">
             <p className="text-sm text-brand-dark/60 mb-2">
-              These prompts barely scratch the surface. Marisa has a full programme to rewire the pattern your quiz revealed.
+              {name}, journaling surfaces what's hidden — but it can't rewire it. The belief that {beliefLabels[primaryBelief] || "you're not enough"} was installed before you could spell your own name. Shifting it requires subconscious work.
             </p>
             <a href={products.secondary?.ctaUrl || products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
               className="text-brand-gold text-sm font-semibold hover:underline">
@@ -411,7 +416,7 @@ function ResultsContent() {
               {/* CTA within the message */}
               <div className="mt-6 pt-6 border-t border-brand-dark/5 text-center">
                 <p className="text-sm text-brand-dark/50 mb-3">
-                  {name}, if this message resonated — imagine what a full programme with Marisa could do.
+                  {name}, reading this message is awareness. But awareness alone won't rewire a belief that's been running your life since childhood. The next step is action.
                 </p>
                 <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
                   className="inline-block bg-brand-dark text-brand-cream text-sm font-semibold px-6 py-3 rounded-full hover:bg-brand-plum transition-colors">
@@ -458,10 +463,10 @@ function ResultsContent() {
           {/* Mini CTA after support videos */}
           <div className="mt-4 bg-gradient-to-r from-brand-gold/5 to-brand-gold/10 rounded-2xl p-5 text-center border border-brand-gold/10">
             <p className="text-sm text-brand-dark/70 mb-1 font-medium">
-              Ready to stop watching and start transforming?
+              {name}, you've watched the videos. You've read the insights. You know the pattern.
             </p>
             <p className="text-xs text-brand-dark/40 mb-3">
-              {name}, everything your quiz revealed can be rewired. Here's how.
+              The question isn't whether this is true — you already feel it. The question is what you do next.
             </p>
             <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
               className="inline-block bg-brand-gold text-brand-dark text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-amber-400 transition-colors">
@@ -472,6 +477,17 @@ function ResultsContent() {
 
         {/* ━━━ 8. PRODUCT PRESCRIPTION (THE SELL) ━━━ */}
         <Section delay={0.4}>
+          {/* "Why this is for YOU" personal letter */}
+          <SectionCard className="mb-4">
+            <SectionLabel text={`${name}, read this before you go`} />
+            <div className="space-y-4">
+              {products.primary.whyYou.split('\n\n').map((para, i) => (
+                <p key={i} className="text-brand-dark/70 text-[15px] leading-[1.8]">{para}</p>
+              ))}
+            </div>
+          </SectionCard>
+
+          {/* The product card */}
           <div className="bg-brand-dark rounded-3xl p-6 md:p-8 text-brand-cream relative overflow-hidden">
             <div className="absolute top-0 right-0 w-40 h-40 bg-brand-gold/10 rounded-full -translate-y-1/2 translate-x-1/2" />
             <div className="relative z-10">
@@ -486,13 +502,20 @@ function ResultsContent() {
                 {products.primary.description}
               </p>
 
-              <div className="space-y-2 mb-6">
+              <div className="space-y-2.5 mb-6">
                 {products.primary.benefits.map((b, i) => (
-                  <div key={i} className="flex items-start gap-2">
+                  <div key={i} className="flex items-start gap-2.5">
                     <span className="text-brand-gold text-sm mt-0.5">✓</span>
-                    <span className="text-brand-cream/60 text-sm">{b}</span>
+                    <span className="text-brand-cream/70 text-sm leading-relaxed">{b}</span>
                   </div>
                 ))}
+              </div>
+
+              {/* Social proof */}
+              <div className="bg-brand-cream/5 rounded-xl p-4 mb-6 border border-brand-cream/10">
+                <p className="text-brand-cream/50 text-xs leading-relaxed italic">
+                  {products.primary.proofPoint}
+                </p>
               </div>
 
               <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
