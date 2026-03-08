@@ -1,0 +1,69 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --brand-cream: #FDF8F0;
+  --brand-gold: #C9A96E;
+  --brand-dark: #1A1A2E;
+  --brand-plum: #4A2040;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--brand-cream);
+  color: var(--brand-dark);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--brand-gold); border-radius: 3px; }
+
+/* Selection color */
+::selection {
+  background: var(--brand-gold);
+  color: white;
+}
+
+/* Animated gradient for loading states */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--brand-cream) 0%,
+    #f0e6d3 50%,
+    var(--brand-cream) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Report typography */
+.report-content p {
+  margin-bottom: 1.2em;
+  line-height: 1.75;
+}
+
+.report-content hr {
+  border: none;
+  text-align: center;
+  margin: 2em 0;
+}
+
+.report-content hr::before {
+  content: "───";
+  color: var(--brand-gold);
+  letter-spacing: 0.5em;
+}
