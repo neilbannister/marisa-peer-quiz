@@ -487,19 +487,6 @@ function ResultsContent() {
             ))}
           </div>
 
-          {/* Mini CTA after support videos */}
-          <div className="mt-4 bg-gradient-to-r from-brand-gold/5 to-brand-gold/10 rounded-2xl p-5 text-center border border-brand-gold/10">
-            <p className="text-sm text-brand-dark/70 mb-1 font-medium">
-              {name}, you've watched the videos. You've read the insights. You know the pattern.
-            </p>
-            <p className="text-xs text-brand-dark/40 mb-3">
-              The question isn't whether this is true — you already feel it. The question is what you do next.
-            </p>
-            <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
-              className="inline-block bg-brand-gold text-brand-dark text-sm font-semibold px-6 py-2.5 rounded-full hover:bg-amber-400 transition-colors">
-              {products.primary.ctaText}
-            </a>
-          </div>
         </Section>
 
         {/* ━━━ 8. PRODUCT PRESCRIPTION (THE SELL) ━━━ */}
