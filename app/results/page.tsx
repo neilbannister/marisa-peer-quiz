@@ -160,13 +160,13 @@ function ResultsContent() {
             animate={{ rotate: 360 }}
             transition={{ repeat: Infinity, duration: 1.2, ease: 'linear' }}
           />
-          <h2 className="text-2xl font-serif text-brand-dark mb-4">Analysing {name}'s responses...</h2>
+          <h2 className="text-2xl font-serif text-brand-dark mb-4">Discovering what {name} was born to do...</h2>
           <div className="space-y-3 text-sm text-brand-dark/40">
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
               Mapping your subconscious belief patterns...
             </motion.p>
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }}>
-              Calculating your Transformation Score...
+              Calculating your readiness profile...
             </motion.p>
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2 }}>
               Generating personalised coaching...
@@ -218,45 +218,55 @@ function ResultsContent() {
           </motion.div>
         </Section>
 
-        {/* ━━━ 2. TRANSFORMATION SCORE ━━━ */}
+        {/* ━━━ 2. WHAT YOU WERE BORN TO DO ━━━ */}
         <Section delay={0.1}>
           <SectionCard>
-            <SectionLabel text="Your Transformation Score" />
-            <div className="flex items-center gap-6 mb-6">
-              <div className="relative w-28 h-28 flex-shrink-0">
-                <svg className="w-28 h-28 -rotate-90" viewBox="0 0 120 120">
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="#f0e6d3" strokeWidth="10" />
-                  <motion.circle
-                    cx="60" cy="60" r="50" fill="none"
-                    stroke="#C9A96E" strokeWidth="10" strokeLinecap="round"
-                    strokeDasharray={`${2 * Math.PI * 50}`}
-                    initial={{ strokeDashoffset: 2 * Math.PI * 50 }}
-                    animate={{ strokeDashoffset: 2 * Math.PI * 50 * (1 - transformationScores.overallScore / 100) }}
-                    transition={{ duration: 2, ease: 'easeOut', delay: 0.5 }}
-                  />
-                </svg>
-                <div className="absolute inset-0 flex flex-col items-center justify-center">
-                  <span className="text-3xl font-bold text-brand-dark">{transformationScores.overallScore}</span>
-                  <span className="text-[10px] text-brand-dark/40">/ 100</span>
+            <SectionLabel text="What You Were Actually Born To Do" />
+
+            {/* The answer — their archetype explained through the lens of the quiz */}
+            <p className="text-brand-dark text-[15px] leading-[1.8] mb-3">
+              {name}, based on your answers, you were born to be <strong style={{ color: archetype.color }}>{archetype.name}</strong>.
+            </p>
+            <p className="text-brand-dark/60 text-sm leading-relaxed mb-6">
+              {archetype.shortDescription}
+            </p>
+
+            {/* Readiness gauge — reframed as "how ready you are to step into it" */}
+            <div className="bg-brand-dark/3 rounded-2xl p-5 mb-6">
+              <div className="flex items-center gap-5">
+                <div className="relative w-24 h-24 flex-shrink-0">
+                  <svg className="w-24 h-24 -rotate-90" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#f0e6d3" strokeWidth="10" />
+                    <motion.circle
+                      cx="60" cy="60" r="50" fill="none"
+                      stroke={archetype.color} strokeWidth="10" strokeLinecap="round"
+                      strokeDasharray={`${2 * Math.PI * 50}`}
+                      initial={{ strokeDashoffset: 2 * Math.PI * 50 }}
+                      animate={{ strokeDashoffset: 2 * Math.PI * 50 * (1 - transformationScores.overallScore / 100) }}
+                      transition={{ duration: 2, ease: 'easeOut', delay: 0.5 }}
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-2xl font-bold text-brand-dark">{transformationScores.overallScore}</span>
+                    <span className="text-[9px] text-brand-dark/40">/ 100</span>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <p className="text-sm text-brand-dark/60 leading-relaxed">
-                  {name}, your Transformation Score is <strong>{transformationScores.overallScore}/100</strong>.
-                  Your readiness level is <strong>{transformationScores.readinessLevel}</strong> {transformationScores.readinessEmoji}
-                </p>
-                <p className="text-xs text-brand-dark/40 mt-2">
-                  {transformationScores.overallScore < 45
-                    ? "This score isn't about how broken you are — it's about how much untapped potential is waiting."
-                    : transformationScores.overallScore < 70
-                    ? "You're at a tipping point. The right intervention now could change everything."
-                    : "You're ready. The only thing missing is the vehicle — and we've found one for you."}
-                </p>
+                <div>
+                  <p className="text-xs uppercase tracking-[0.15em] text-brand-dark/40 mb-1">Your Readiness Score</p>
+                  <p className="text-sm text-brand-dark/70 leading-relaxed">
+                    {transformationScores.overallScore < 45
+                      ? `You know what you were born to do, ${name} — but right now, there are subconscious blocks stopping you from stepping into it. That's not a flaw. It's the starting point for real transformation.`
+                      : transformationScores.overallScore < 70
+                      ? `You're closer than you think, ${name}. The gap between where you are and where you're meant to be isn't talent or intelligence — it's the beliefs holding you back. And those can be rewired.`
+                      : `${name}, you're ready. You know who you are, you know what you want, and the only thing standing between you and it is taking the next step.`}
+                  </p>
+                </div>
               </div>
             </div>
 
-            {/* Dimension breakdowns */}
-            <div className="pt-4 border-t border-brand-dark/5">
+            {/* Dimension breakdowns — "Here's what's driving this" */}
+            <p className="text-[10px] uppercase tracking-[0.2em] text-brand-dark/30 mb-4">Your Profile Breakdown</p>
+            <div>
               {transformationScores.dimensions.map((dim, i) => (
                 <ScoreBar key={dim.label} dimension={dim} delay={0.8 + i * 0.2} />
               ))}

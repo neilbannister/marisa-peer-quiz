@@ -102,7 +102,7 @@ export function calculateTransformationScores(
     dimensions.reduce((sum, d) => sum + d.score, 0) / dimensions.length
   );
 
-  const readinessLevel = overallScore >= 70 ? 'High' : overallScore >= 45 ? 'Emerging' : 'Awakening';
+  const readinessLevel = overallScore >= 70 ? 'Strong' : overallScore >= 45 ? 'Emerging' : 'Hidden';
   const readinessEmoji = overallScore >= 70 ? '🔥' : overallScore >= 45 ? '✨' : '🌱';
 
   return { overallScore, dimensions, readinessLevel, readinessEmoji };
