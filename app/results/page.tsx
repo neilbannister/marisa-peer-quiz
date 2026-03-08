@@ -322,21 +322,11 @@ function ResultsContent() {
             <p className="text-sm text-brand-dark/60">{videos.mainVideo.description}</p>
             <p className="text-xs text-brand-dark/30 mt-2">{videos.mainVideo.duration}</p>
 
-            {/* Mini CTA after video */}
+            {/* Soft nudge after video */}
             <div className="mt-5 pt-5 border-t border-brand-dark/5">
-              <p className="text-xs text-brand-dark/40 mb-2">
-                {conversionPath === 'A'
-                  ? `${name}, this video explains the method — but RTT goes far deeper than anything on YouTube. Your quiz showed healer potential that most people don't have.`
-                  : conversionPath === 'B'
-                  ? `${name}, this is Marisa's public teaching. The Peer Hypnosis Method teaches you the techniques she actually uses in sessions — starting with your own mind.`
-                  : conversionPath === 'C'
-                  ? `${name}, watching is one thing. But the belief that ${beliefLabels[primaryBelief] || "you're not enough"} won't shift from a video alone. It needs root cause work.`
-                  : `${name}, this talk has changed millions of lives. But imagine having Marisa's full methodology working on the specific pattern your quiz revealed.`}
+              <p className="text-xs text-brand-dark/40">
+                Keep scrolling — we've put together a personalised next step for you based on everything your quiz revealed.
               </p>
-              <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
-                className="text-brand-gold text-xs font-semibold hover:underline">
-                {products.primary.ctaText} →
-              </a>
             </div>
           </SectionCard>
         </Section>
@@ -407,14 +397,11 @@ function ResultsContent() {
               </div>
               <p className="text-right mt-6 text-sm italic text-brand-dark/40">— Marisa x</p>
 
-              {/* CTA within the message */}
+              {/* Soft nudge to keep reading */}
               <div className="mt-6 pt-6 border-t border-brand-dark/5 text-center">
-                <p className="text-sm text-brand-dark/50 mb-3">
-                  {name}, reading this message is awareness. But awareness alone won't rewire a belief that's been running your life since childhood. The next step is action.
-                </p>
-                <a href={products.primary.ctaUrl} target="_blank" rel="noopener noreferrer"
-                  className="inline-block bg-brand-dark text-brand-cream text-sm font-semibold px-6 py-3 rounded-full hover:bg-brand-plum transition-colors">
-                  {products.primary.ctaText}
+                <a href="#your-next-step"
+                  className="text-brand-gold text-sm font-medium hover:underline">
+                  See what Marisa recommends for you →
                 </a>
               </div>
             </SectionCard>
@@ -487,6 +474,7 @@ function ResultsContent() {
         </Section>
 
         {/* ━━━ 8. PRODUCT PRESCRIPTION (THE SELL) ━━━ */}
+        <div id="your-next-step" />
         <Section delay={0.4}>
           {/* "Why this is for YOU" personal letter */}
           <SectionCard className="mb-4">
