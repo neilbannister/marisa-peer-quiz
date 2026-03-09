@@ -120,7 +120,7 @@ function ResultsContent() {
     healer: 8, powerhouse: 12, freedom: 6, deep_feeler: 10, renaissance: 4,
     rtt_intent: 8, readiness: 6, investment: 4, pain: 6,
     belief_not_enough: 4, belief_not_enough_capability: 6, belief_not_lovable: 2,
-    body_heart: 3, body_shoulders: 0, deep_feeler: 10,
+    body_heart: 3, body_shoulders: 0,
     rel_over_giver: 3, money_undervaluing: 3,
     purpose_blocked: 0,
     healer_ability_strong: 3,
